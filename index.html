@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BFL GALLERY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- CURSOR GLOW -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- GRAIN OVERLAY -->
+  <div class="grain-overlay"></div>
+
+  <!-- AMBIENT LIGHTS -->
+  <div class="ambient">
+    <div class="ambient-orb orb1"></div>
+    <div class="ambient-orb orb2"></div>
+    <div class="ambient-orb orb3"></div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <div class="logo-block">
+        <div class="logo-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="36" height="36" rx="8" stroke="url(#lg1)" stroke-width="1.5"/>
+            <circle cx="20" cy="20" r="8" stroke="url(#lg1)" stroke-width="1.5"/>
+            <circle cx="20" cy="20" r="3" fill="url(#lg1)"/>
+            <defs>
+              <linearGradient id="lg1" x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#38bdf8"/>
+                <stop offset="0.5" stop-color="#818cf8"/>
+                <stop offset="1" stop-color="#e879f9"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">BFL GALLERY</span>
+          <span class="logo-sub">PHOTOGRAPHY COMMUNITY</span>
+        </div>
+      </div>
+
+      <nav class="header-nav">
+        <span class="nav-counter" id="photoCounter">—</span>
+        <div class="nav-divider"></div>
+        <button class="btn-ghost" onclick="Gallery.scrollToTop()">Explore</button>
+        <button class="btn-primary" id="openUploadBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload
+        </button>
+      </nav>
+
+      <button class="hamburger" id="hamburger" aria-label="menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">— Komunitas Foto Indonesia —</p>
+      <h1 class="hero-title">
+        <span class="hero-line" data-delay="0">Abadikan</span>
+        <span class="hero-line accent" data-delay="100">Momen</span>
+        <span class="hero-line" data-delay="200">Terbaikmu</span>
+      </h1>
+      <p class="hero-desc">Galeri terbuka untuk semua orang. Upload, bagikan, dan eksplorasi ribuan foto memukau dari komunitas kami.</p>
+      <div class="hero-cta">
+        <button class="btn-primary hero-btn" id="heroUploadBtn">
+          Mulai Upload
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn-ghost hero-btn" onclick="Gallery.scrollToGallery()">Jelajahi Foto ↓</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-frame" id="heroFrame"></div>
+    </div>
+  </section>
+
+  <!-- ===== FILTER BAR ===== -->
+  <div class="filter-section">
+    <div class="filter-inner">
+      <div class="filter-label">Filter:</div>
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-cat="all">Semua</button>
+        <button class="filter-tab" data-cat="alam">🌿 Alam</button>
+        <button class="filter-tab" data-cat="kota">🏙️ Kota</button>
+        <button class="filter-tab" data-cat="manusia">👤 Manusia</button>
+        <button class="filter-tab" data-cat="arsitektur">🏛️ Arsitektur</button>
+        <button class="filter-tab" data-cat="kuliner">🍜 Kuliner</button>
+        <button class="filter-tab" data-cat="lainnya">✨ Lainnya</button>
+      </div>
+      <div class="sort-select-wrap">
+        <select class="sort-select" id="sortSelect">
+          <option value="newest">Terbaru</option>
+          <option value="popular">Terpopuler</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GALLERY ===== -->
+  <main class="gallery-section" id="gallerySection">
+    <div class="masonry-grid" id="masonryGrid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📷</div>
+      <h3>Belum Ada Foto</h3>
+      <p>Jadilah yang pertama mengisi galeri ini.</p>
+      <button class="btn-primary" id="emptyUploadBtn">Upload Sekarang</button>
+    </div>
+  </main>
+
+  <!-- ===== UPLOAD MODAL ===== -->
+  <div class="modal-backdrop" id="uploadBackdrop">
+    <div class="modal upload-modal" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Upload Foto</h2>
+        <button class="modal-close" id="closeUploadBtn" aria-label="Tutup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- DROP ZONE -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*" aria-label="Pilih foto" />
+          <div class="drop-content" id="dropContent">
+            <div class="drop-icon-wrap">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+            </div>
+            <p class="drop-title">Drag &amp; drop foto di sini</p>
+            <p class="drop-hint">atau <strong>klik untuk browse</strong> — JPG, PNG, WEBP (maks. 10MB)</p>
+          </div>
+          <img class="drop-preview" id="dropPreview" src="" alt="Preview" />
+        </div>
+
+        <!-- FORM FIELDS -->
+        <div class="form-fields">
+          <div class="field-group">
+            <label class="field-label" for="photoTitle">Judul Foto</label>
+            <input class="field-input" type="text" id="photoTitle" placeholder="Berikan judul yang menarik..." maxlength="80" />
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label" for="photoAuthor">Fotografer</label>
+              <input class="field-input" type="text" id="photoAuthor" placeholder="Nama kamu..." maxlength="40" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="photoCategory">Kategori</label>
+              <select class="field-input field-select" id="photoCategory">
+                <option value="alam">🌿 Alam</option>
+                <option value="kota">🏙️ Kota</option>
+                <option value="manusia">👤 Manusia</option>
+                <option value="arsitektur">🏛️ Arsitektur</option>
+                <option value="kuliner">🍜 Kuliner</option>
+                <option value="lainnya">✨ Lainnya</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" id="cancelUploadBtn">Batal</button>
+        <button class="btn-primary btn-publish" id="publishBtn">
+          <span id="publishLabel">Publish Foto</span>
+          <div class="btn-spinner" id="publishSpinner" aria-hidden="true"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LIGHTBOX ===== -->
+  <div class="lightbox-backdrop" id="lightboxBackdrop">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Tutup">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="lightbox-inner">
+      <button class="lightbox-nav prev" id="lbPrev" aria-label="Sebelumnya">&#8592;</button>
+      <div class="lightbox-media" id="lightboxMedia">
+        <img id="lightboxImg" src="" alt="" />
+      </div>
+      <button class="lightbox-nav next" id="lbNext" aria-label="Berikutnya">&#8594;</button>
+    </div>
+    <div class="lightbox-info" id="lightboxInfo"></div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">BFL GALLERY</span>
+        <p>Platform komunitas foto terbuka untuk semua.</p>
+      </div>
+      <div class="footer-copy">
+        <span>© 2025 BFL Gallery</span>
+        <span class="footer-dot">·</span>
+        <span>Made with ♥ for photographers</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
